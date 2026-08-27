@@ -1,53 +1,69 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const User = require("./models/user-model");
+const Message = require("./models/message-model");
 
 const app = express();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.post("/signup", async (req, res) => {
+app.post("/message", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    const user = await User.create({ name, email, password });
-    const token = await user.generateToken();
-    res.status(201).json({ success: true, token });
+    const { email, name, age } = req.body;
+    const message = await Message.create({ email, name, age });
+    res.status(200).json({ success: true, data: message });
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
-app.post("/signin", async (req, res) => {
+app.get("/message", async (req, res) => {
   try {
-    const { name, email } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "email not registered" });
-    }
-    const validate = await user.verifypass(password);
-    if (!validate) {
-      res
-        .status(400)
-        .json({ success: false, message: "password is not valid" });
-    }
-    const token = await user.generateToken();
-    res.status(200).json({ success: true, token });
+    const message = await Message.find({});
+    res.status(200).json({ success: true, data: message });
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.delete("/message/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const message = await Message.findByIdAndDelete(id);
+    res.status(200).json({ success: true, data: [] });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.mesage });
+  }
+});
+
+app.put("/message/:id", async (req, res) => {
+  try {
+    const updateMessage = await Message.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        returnDocument: "after",
+        runValidators: true,
+      },
+    );
+    if (!updateMessage) {
+      res
+        .status(404)
+        .json({ success: false, message: `no found with id ${req.params}` });
+    }
+    res.status(200).json({ success: true, data: updateMessage });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
 mongoose
-  .connect("mongodb://localhost:27017/sachin")
+  .connect("mongodb://localhost:27017/crud")
   .then(() => {
     console.log("Database connection successful!");
     app.listen(8000, () => {
-      console.log("Listining on running port number 8000");
+      console.log("Listing on port running number 8000");
     });
   })
   .catch(() => {
-    console.log("Database connection failed");
+    console.log("Databse connection failed");
   });
