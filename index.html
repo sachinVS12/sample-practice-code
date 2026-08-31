@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-box">
+        <h1 id="title">Sign Up</h1>
+        <p class="subtitle" id="subtitle">Create your account</p>
+
+        <form id="authForm">
+          <div class="input-group" id="nameField">
+            <input type="text" id="name" placeholder="Full Name" />
+          </div>
+
+          <div class="input-group">
+            <input type="email" id="email" placeholder="Email Address" />
+          </div>
+
+          <div class="input-group">
+            <input type="password" id="password" placeholder="Password" />
+          </div>
+
+          <div class="input-group" id="confirmField">
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Confirm Password"
+            />
+          </div>
+
+          <p id="message"></p>
+
+          <button type="submit" id="submitBtn">Create Account</button>
+        </form>
+
+        <p class="switch-text">
+          <span id="switchMessage">Already have an account?</span>
+          <button type="button" id="switchBtn">Login</button>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
