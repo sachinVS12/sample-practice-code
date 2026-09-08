@@ -1,43 +1,103 @@
-const winston = require("winston");
-const express = require("express");
-const connectDB = require("./env/db");
-const cors = require("cors");
-const morgan = require("morgan");
-const cookieparser = require("cookieparser");
-const fileupload = require("express-fielupload");
-const errorhandler = require("./middleware/error");
-const dotenv = require("dotenv");
-const authRouters = require("./Routers/authRouters");
-const mqttRouters = require("./Routers/mqttRouters");
-const supportemailRouters = require("./Routers/supportmailRouters");
-const backupdbRouters = require("./Routers/bakupdbRouters");
+const mongoose = require("mongoose");
+const bcrytpjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-// load environemnt variable
-dotenv.config({ path: "./.env" });
+const employeeSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phonenumber: {
+      type: String,
+      required: true,
+    },
+    topics: {
+      type: String,
+      required: true,
+    },
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "employee",
+    },
+    favorates: {
+      type: String,
+      required: true,
+    },
+    graphwl: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    layout: {
+      type: String,
+      default: "layout",
+    },
+    assigneddigitalmeters: {
+      type: [
+        {
+          metertype: String,
+          topics: String,
+          minvalue: Number,
+          maxvalue: Number,
+          tick: Number,
+          label: String,
+        },
+      ],
+      default: true,
+    },
+    role: {
+      type: String,
+      default: "employee",
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-// intialize express
-const app = express();
-
-// logger configuration
-const logger = winston.createlogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamps(),
-    winston.format.json(),
-  ),
-  transports: [
-    new winston.transports.File({ filename: "error.log", level: "error" }),
-    new winston.transports.File({ fielname: combine.log }),
-  ],
+// pre- save middleware hash password before save database
+employeeSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  const salt = await bcrytpjs.genSalt(10);
+  this.password = await bcrytpjs.hash(this.password, salt);
+  next();
 });
 
-// middleware
-app.use(express.json());
-app.use(fileupload());
-app.use(express.urlencoded({ extended: false }));
-app.use(
-  cors({
-    origin: "*",
-    method: ["GET", "PUT", "POST", "DELETE", "PATCH"],
-  }),
-);
+// method to verify jwt token signedup and loggedin
+employeeSchema.method.getToken = function () {
+  return jwt.sign(
+    {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      phonenumber: this.phonenumber,
+      role: this.role,
+      assigneddigitalmeters: this.assigneddigitalmeters,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "3d",
+    },
+  );
+};
+
+// method to enterpassword into existing password
+employeeSchema.method.verifypass = async function (enterpassword) {
+  return await bcrytpjs.compare(enterpassword, this.password);
+};
+
+// create the model
+const employee = mongoose.model("employee", employeeSchema);
+
+// exports module
+exports.module = employee;
