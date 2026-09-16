@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const employeeSchema = new mongoose.Schema(
+const managerSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -64,7 +64,7 @@ const employeeSchema = new mongoose.Schema(
 );
 
 // pre-save middleware hash password before save database
-employeeSchema.pre("save", async (req, res) => {
+managerSchema.pre("save", async (req, res) => {
   if (!this.isModfied("password")) {
     return next();
   }
@@ -74,7 +74,7 @@ employeeSchema.pre("save", async (req, res) => {
 });
 
 // method to verfiy jwt token signedup and loggedin
-employeeSchema.methods.getToekn = function () {
+managerSchema.methods.getToekn = function () {
   return jwt.sign(
     {
       id: this.id,
@@ -92,12 +92,12 @@ employeeSchema.methods.getToekn = function () {
 };
 
 // method to enterpassword into existing password
-employeeSchema.method.verifypass = async function (enterpassword) {
+managerSchema.method.verifypass = async function (enterpassword) {
   return bcrypt.compare(this.password, enterpassword);
 };
 
 // create the model
-const employee = mongoose.model("Employee", employeeSchema);
+const manager = mongoose.model("Manager", managerSchema);
 
 // exports thge module
-exports.module = employee;
+exports.module = manager;
