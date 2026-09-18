@@ -1,76 +1,101 @@
-const winston = require("winston");
-const connectdb = require("./env/db");
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
-const cookieparser = require("cookieparser");
-const fileupload = require("express-fielupload");
-const errorhandler = require("./middleware/error");
-const dotenv = require("dotenv");
-const authRouters = reqquire("./Routers/authRouters");
-const mqttRouters = require("./Routers/authRouters");
-const supportemailRouters = require("./Routers/mqttRouters");
-const backuppdbRouters = require("./Routers/backupdbRouters");
+const mongoose = require("mongoose");
+const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-// load environmnet varaible
-dotenv.config({ path: "./.env" });
-
-// initialize express
-const app = express();
-
-// logger configuration
-const logger = winston.createlogger({
-  level: "info",
-  format: winston.formta.combine(
-    winston.format.timestamps(),
-    winston.format.json(),
-  ),
-  transports: [
-    new winston.transports.File({ filename: "error.log", level: "error" }),
-    new winston.transports.File({ fielname: "combine.log" }),
-  ],
-});
-
-// middleware
-app.use(express.json());
-app.use(fileupload());
-app.use(express.urlencoded({ extended: false }));
-app.use(
-  cors({
-    origin: "*",
-    method: ["GET", "PUT", "POST", "DELETE", "PATCH"],
-    exposedHeaders: ["Conetent-lengtrh", "Content-disposition"],
-    maxage: 86400,
-  }),
+const managerSchmea = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phonenumber: {
+      type: String,
+      required: true,
+    },
+    topics: {
+      type: String,
+      required: true,
+    },
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "company",
+    },
+    favorates: {
+      type: String,
+      required: true,
+    },
+    graphwl: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    layout: {
+      type: String,
+      required: true,
+    },
+    assigneddigitalmeters: {
+      type: [
+        {
+          metertype: String,
+          topics: String,
+          minvalue: Number,
+          maxvalue: Number,
+          tick: Number,
+          label: String,
+        },
+      ],
+      default: true,
+    },
+    role: {
+      type: String,
+      default: "employee",
+    },
+  },
+  {
+    timestamps: true,
+  },
 );
-app.use(cookieparser());
 
-// increase request to timeout and enble chunkked response
-app.use((req, res, next) => {
-  req.setTimeout(60000); // 10 minutes timeout
-  res.setTimeout(60000); // 10 minutes timeout
-  res.flush = res.flush(() => {}); // ensure flush is availble
-  logger.info(`Requested to set url ${req.url}`, {
-    method: req.method,
-    body: req.body,
-  });
+// pre-save middleware hash password before save database
+managerSchmea.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  const salt = await bcryptjs.genSalt(10);
+  this.password = await bcryptjs.hash(this.password, salt);
   next();
 });
+//  method to verify jwt token and signedup and loggedin
+managerSchmea.methods.getToken = function () {
+  return jwt.sign(
+    {
+      id: this.id,
+      name: this.name,
+      phonenumber: this.phonenumber,
+      role: this.role,
+      assignedigitlameter: this.assigneddigitalmeters,
+    },
+    process.env.JWTSECRET,
+    {
+      expiresIn: "3d",
+    },
+  );
+};
 
-// Routers
-app.use("api/v1/auth", authRouters);
-app.use("api/v1/mqtt", mqttRouters);
-app.use("api/v/supportemail", supportemailRouters);
-app.use("api/v1/backupdb", backuppdbRouters);
+// method to enterpassword into exitsing password
+managerSchmea.methods.verifypass = async function (enterpassword) {
+  return await bcryptjs.compare(this.password, enterpassword);
+};
 
-// errorhandler
-app.use(errorhandler());
+// create the  model
+const manager = mongoose.model("manager", managerSchmea);
 
-// database connection
-connectdb();
-
-// start the server
-const port = process.env.port || 5000;
-app.listen(port, () => {
-  logger.info(`Api server running on port ${port}`);
-});
+// exports module
+exports.moduel = manager;
