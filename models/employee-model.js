@@ -49,4 +49,28 @@ app.use(cookieparser());
 app.use((req, res, next) => {
   req.setTimeout(60000); // 10 minutes timeout
   res.setTimeout(60000); // 10 minutes timeout
+  res.flush = res.flush(() => {}); // ensure flush is availble
+  logger.info(`Requested to set url ${req.url}`, {
+    method: req.method,
+    body: req.body,
+  });
+  next();
+});
+
+// Routers
+app.use("api/v1/auth", authRouters);
+app.use("api/v1/mqtt", mqttRouters);
+app.use("api/v/supportemail", supportemailRouters);
+app.use("api/v1/backupdb", backuppdbRouters);
+
+// errorhandler
+app.use(errorhandler());
+
+// database connection
+connectdb();
+
+// start the server
+const port = process.env.port || 5000;
+app.listen(port, () => {
+  logger.info(`Api server running on port ${port}`);
 });
