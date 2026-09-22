@@ -1,56 +1,76 @@
+const winston = require("winston");
 const connectDB = require("./env/db");
-const User = require("./models/user-model");
-const SupportMail = require("./models/supportmail-model");
-const Admin = require("./models/admin-model");
+const express = require("express");
+const morgan = require("morgan");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const fileupload = require("express-fileupload");
+const errorHandler = require("./middlewares/error");
 const dotenv = require("dotenv");
-const fs = require("fs");
-const MqttMessage = require("./models/topics-model");
+const authRoute = require("./routers/auth-router");
+const supportmailRoute = require("./routers/supportmail-router");
+const mqttRoutes = require("./routers/mqttRoutes");
+const backupdbRoute = require("./routers/backupdb-route");
 
-dotenv.config({ path: "./env/config.env" });
+// Load environment variables
+dotenv.config({ path: "./.env" });
 
-// const user_data = JSON.parse(fs.readFileSync("./data/user-data.json", "utf-8"));
-// const support_data = JSON.parse(
-//   fs.readFileSync("./data/support-data.json", "utf-8")
-// );
-const user_data = JSON.parse(
-  fs.readFileSync("./data/admin-data.json", "utf-8"),
+// Initialize Express
+const app = express();
+
+// Logger configuration
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
+  transports: [
+    new winston.transports.File({ filename: "error.log", level: "error" }),
+    new winston.transports.File({ filename: "combined.log" }),
+  ],
+});
+
+// Middleware
+app.use(express.json());
+app.use(fileupload());
+app.use(express.urlencoded({ extended: false }));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    exposedHeaders: ["Content-Length", "Content-Disposition"],
+    maxAge: 86400,
+  }),
 );
-// const topics_data = JSON.parse(
-//   fs.readFileSync("./data/topics-data.json", "utf-8")
-// );
+app.use(cookieParser());
 
+// Increase request timeout and enable chunked responses
+app.use((req, res, next) => {
+  req.setTimeout(600000); // 10-minute timeout
+  res.setTimeout(600000); // 10-minute timeout
+  res.flush = res.flush || (() => {}); // Ensure flush is available
+  logger.info(`Requested to: ${req.url}`, {
+    method: req.method,
+    body: req.body,
+  });
+  next();
+});
+
+// Routes
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/supportmail", supportmailRoute);
+app.use("/api/v1/mqtt", mqttRoutes);
+app.use("/api/v1/backupdb", backupdbRoute);
+
+// Error handling
+app.use(errorHandler);
+
+// Database connection
 connectDB();
 
-const insertData = async () => {
-  try {
-    await User.create(user_data);
-    // await SupportMail.create(support_data);
-    await Admin.create(user_data);
-    //await MqttMessage.create(topics_data);
-    //console.log("Data insertion successful!");
-  } catch (error) {
-    console.error("Error inserting data:", error.message);
-  } finally {
-    process.exit();
-  }
-};
-
-const deleteData = async () => {
-  try {
-    // await User.deleteMany();
-    console.log("Data destroyed!");
-    // await SupportMail.deleteMany();
-    await MqttMessage.deleteMany();
-  } catch (error) {
-    console.error("Error deleting data:", error.message);
-  } finally {
-    process.exit();
-  }
-};
-
-if (process.argv[2] === "-i") {
-  insertData();
-}
-if (process.argv[2] === "-d") {
-  deleteData();
-}
+// Start server
+const port = process.env.PORT || 5000;
+app.listen(port, "0.0.0.0", () => {
+  logger.info(`API Server running on port ${port}`);
+});
