@@ -60,3 +60,36 @@ app.delete("/message/:id", async (req, res) => {
     res.status(500).json({ success: false, message: error.mesage });
   }
 });
+
+app.put("/message/:id", async (req, res) => {
+  try {
+    const updateMessage = await Message.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        returnDocument: "after",
+        runValidators: true,
+      },
+    );
+    if (!updateMessage) {
+      res
+        .status(404)
+        .json({ success: false, message: `no found with id ${req.params}` });
+    }
+    res.status(200).json({ success: true, data: updateMessage });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+mongoose
+  .connect("mongodb://localhost:27017/crud")
+  .then(() => {
+    console.log("Database connection successful!");
+    app.listen(8000, () => {
+      console.log("Listing on port running number 8000");
+    });
+  })
+  .catch(() => {
+    console.log("Databse connection failed");
+  });
