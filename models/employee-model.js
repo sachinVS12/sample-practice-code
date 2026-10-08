@@ -94,8 +94,8 @@ managerSchema.methods.getToken = function () {
 };
 
 // method to enterpasswor into existing password
-managerSchema.methods.verifypass = async function (enterpasswrd) {
-  return await bcrypt.compare(this.password, eneterpassword);
+managerSchema.methods.verifypass = async function (enterpassword) {
+  return await bcrypt.compare(this.password, enterpassword);
 };
 
 // create model
