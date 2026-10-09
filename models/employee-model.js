@@ -93,7 +93,7 @@ managerSchema.methods.getToken = function () {
   );
 };
 
-// method to enterpasswor into existing password
+// method to enterpassword into existing password
 managerSchema.methods.verifypass = async function (enterpassword) {
   return await bcrypt.compare(this.password, enterpassword);
 };
@@ -101,5 +101,5 @@ managerSchema.methods.verifypass = async function (enterpassword) {
 // create model
 const manager = mongoose.model("manager", managerSchema);
 
-// exports modeule
-exports.moduel = manager;
+// exports module
+exports.module = manager;
