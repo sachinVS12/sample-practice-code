@@ -1,76 +1,103 @@
-const winston = require("winston");
-const express = require("express");
-const connectdb = require("/env/db");
-const cors = require("cors");
-const morgan = require("morgan");
-const errorhandelr = require("./middleware/error");
-const cookieprser = require("express-cookieparser");
-const fileupload = require("fielupload");
-const dotenv = require("dotenv");
-const authRouters = require("./Routers/authRouters");
-const mqttRouters = require("./Routers/mqttRouters");
-const supportemailRouters = require("./Routers/supportemailRouters");
-const backupdbRouters = require("./Routers/backupdbRouters");
+const mongoose = require("mongoose");
+const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-//load environment variable
-dotenv.config({ path: "./.env" });
-
-// intialize express
-const app = express();
-
-//logger configuration
-const logger = winston.createlogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamps(),
-    winston.format.json(),
-  ),
-  transports: [
-    new file.winston.transports({ filename: "error.log", level: "error" }),
-    new file.winston.transports({ filename: "combie.log" }),
-  ],
-});
-
-// middleware
-app.use(express.jsosn());
-app.use(fileupload());
-app.use(express.urlencoded({ extended: false }));
-app.use(
-  cors({
-    origin: "*",
-    method: ["GET", "POST", "DELETE", "PATCH", "DELETE"],
-    exposedHeaders: ["Content-Length", "Content-disposition"],
-    maxage: 86400,
-  }),
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      requird: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phonenumber: {
+      type: String,
+      required: true,
+    },
+    topics: {
+      type: String,
+      required: true,
+    },
+    company: {
+      type: String,
+      required: true,
+    },
+    favorates: {
+      type: String,
+      required: true,
+    },
+    graphwl: {
+      type: String,
+      required: true,
+    },
+    layout: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    assigneddigitalmeters: {
+      type: [
+        {
+          metertype: String,
+          topics: String,
+          minvalue: Number,
+          maxvalue: Number,
+          tick: Number,
+          label: String,
+        },
+      ],
+      default: true,
+    },
+    role: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
 );
-app.use(cookieparser());
 
-// increase request to timeout and enable chunked response
-app.use((req, res, next) => {
-  req.setTimeout(600000); // 10 minutes timeout
-  res.setTimeout(600000); // 10 minutes timeout
-  res.flsuh = res.flsuh || (() => {}); // ensure flsuh is available
-  logger.info(`Requested set url ${req.url}`, {
-    method: req.method,
-    body: req.body,
-  });
+// pre-save middleware hash password before save database
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcryptjs.hash(this.password, salt);
   next();
 });
 
-// Routers
-app.use("api/v1/auth", authRouters);
-app.use("api/v1/mqtt", mqttRouters);
-app.use("api/v1/supportemail", supportemailRouters);
-app.use("api/v1/backupdb", backupdbRouters);
+// methods to verify jwt token signdup and loggedin
+userSchema.method.getToken = function () {
+  return jwt.sign(
+    {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      phonenumber: this.phonenumber,
+      role: this.role,
+      assigneddigitalmeters: this.assigneddigitalmeters,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "3d",
+    },
+  );
+};
 
-// errorhnadler
-app.use(errorhandelr());
+// method to enterpassword into existing password
+userSchema.method.verifypass = async function (enterpassword) {
+  return await bcryptjs.compare(this.password, enterpassword);
+};
 
-// databass connection
-connectdb();
+// create the model
+const user = mongoose.model("user", userSchema);
 
-// startbthe server
-const port = process.env.port || 5000;
-app.listen(port, "0.0.0.0", () => {
-  logger.info(`Api server running on port ${port}`);
-});
+// exports moduele
+exports.module = user;
