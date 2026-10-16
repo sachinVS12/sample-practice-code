@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Signup</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 420px;
+        background: white;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .tabs {
+        display: flex;
+        background: #f1f1f1;
+        padding: 5px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+      }
+
+      .tabs button {
+        width: 50%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        background: transparent;
+        color: #555;
+        transition: 0.3s;
+      }
+
+      .tabs button.active {
+        background: #667eea;
+        color: white;
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #888;
+        margin-bottom: 25px;
+        font-size: 14px;
+      }
+
+      .input-group {
+        margin-bottom: 18px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 7px;
+        color: #444;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      input {
+        width: 100%;
+        padding: 13px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+        font-size: 15px;
+        transition: 0.3s;
+      }
+
+      input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+      }
+
+      .password-box {
+        position: relative;
+      }
+
+      .password-box input {
+        padding-right: 65px;
+      }
+
+      .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 12px;
+        color: #667eea;
+        font-weight: bold;
+        user-select: none;
+      }
+
+      .forgot {
+        text-align: right;
+        margin: -5px 0 20px;
+      }
+
+      .forgot a {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 13px;
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .submit-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+
+      .message {
+        margin-top: 15px;
+        text-align: center;
+        font-size: 14px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+      }
+
+      .message.success {
+        color: #16803c;
+      }
+
+      .message.error {
+        color: #d93025;
+      }
+
+      .switch-text {
+        text-align: center;
+        margin-top: 22px;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .switch-text a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 25px 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="tabs">
+        <button
+          id="loginTab"
+          class="active"
+          type="button"
+          onclick="showForm('login')"
+        >
+          Login
+        </button>
+        <button id="signupTab" type="button" onclick="showForm('signup')">
+          Sign Up
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm">
+        <h2>Welcome Back!</h2>
+        <p class="subtitle">Login to your account</p>
+
+        <div class="input-group">
+          <label for="loginEmail">Email Address</label>
+          <input
+            type="email"
+            id="loginEmail"
+            placeholder="Enter your email"
+            autocomplete="email"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="loginPassword">Password</label>
+          <div class="password-box">
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            />
+            <span
+              class="toggle-password"
+              onclick="togglePassword('loginPassword', this)"
+              >SHOW</span
+            >
+          </div>
+        </div>
+
+        <div class="forgot">
+          <a href="#" onclick="forgotPassword(event)">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn">Login</button>
+
+        <p class="switch-text">
+          Don't have an account?
+          <a onclick="showForm('signup')">Sign Up</a>
+        </p>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="signupForm" class="hidden">
+        <h2>Create Account</h2>
+        <p class="subtitle">Sign up to get started</p>
+
+        <div class="input-group">
+          <label for="fullName">Full Name</label>
+          <input
+            type="text"
+            id="fullName"
+            placeholder="Enter your full name"
+            autocomplete="name"
+            minlength="2"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="signupEmail">Email Address</label>
+          <input
+            type="email"
+            id="signupEmail"
+            placeholder="Enter your email"
+            autocomplete="email"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="signupPassword">Password</label>
+          <div class="password-box">
+            <input
+              type="password"
+              id="signupPassword"
+              placeholder="Minimum 8 characters"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            />
+            <span
+              class="toggle-password"
+              onclick="togglePassword('signupPassword', this)"
+              >SHOW</span
+            >
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="password-box">
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Re-enter your password"
+              autocomplete="new-password"
+              required
+            />
+            <span
+              class="toggle-password"
+              onclick="togglePassword('confirmPassword', this)"
+              >SHOW</span
+            >
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Create Account</button>
+
+        <p class="switch-text">
+          Already have an account?
+          <a onclick="showForm('login')">Login</a>
+        </p>
+      </form>
+
+      <p id="message" class="message" role="status" aria-live="polite"></p>
+    </div>
+
+    <script>
+      const loginForm = document.getElementById("loginForm");
+      const signupForm = document.getElementById("signupForm");
+      const message = document.getElementById("message");
+
+      function showForm(type) {
+        const isLogin = type === "login";
+
+        loginForm.classList.toggle("hidden", !isLogin);
+        signupForm.classList.toggle("hidden", isLogin);
+
+        document.getElementById("loginTab").classList.toggle("active", isLogin);
+        document
+          .getElementById("signupTab")
+          .classList.toggle("active", !isLogin);
+
+        message.textContent = "";
+        message.className = "message";
+      }
+
+      function togglePassword(id, element) {
+        const input = document.getElementById(id);
+        const showing = input.type === "text";
+
+        input.type = showing ? "password" : "text";
+        element.textContent = showing ? "SHOW" : "HIDE";
+      }
+
+      function showMessage(text, type) {
+        message.textContent = text;
+        message.className = "message " + type;
+      }
+
+      // Demo signup: stores account details in this browser only.
+      signupForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById("fullName").value.trim();
+        const email = document
+          .getElementById("signupEmail")
+          .value.trim()
+          .toLowerCase();
+        const password = document.getElementById("signupPassword").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        if (name.length < 2) {
+          showMessage("Please enter your full name.", "error");
+          return;
+        }
+
+        if (password.length < 8) {
+          showMessage("Password must be at least 8 characters.", "error");
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          showMessage("Passwords do not match!", "error");
+          return;
+        }
+
+        // Demo only — not secure authentication.
+        // Use a backend for real accounts and password hashing.
+        const accounts = JSON.parse(
+          localStorage.getItem("demoAccounts") || "{}",
+        );
+
+        if (accounts[email]) {
+          showMessage("An account with this email already exists.", "error");
+          return;
+        }
+
+        accounts[email] = { name: name, password: password };
+
+        localStorage.setItem("demoAccounts", JSON.stringify(accounts));
+
+        signupForm.reset();
+        document.getElementById("loginEmail").value = email;
+
+        showForm("login");
+        showMessage("Account created! Please log in.", "success");
+      });
+
+      // Demo login: checks locally stored account details.
+      loginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const email = document
+          .getElementById("loginEmail")
+          .value.trim()
+          .toLowerCase();
+        const password = document.getElementById("loginPassword").value;
+
+        const accounts = JSON.parse(
+          localStorage.getItem("demoAccounts") || "{}",
+        );
+
+        if (accounts[email] && accounts[email].password === password) {
+          showMessage(
+            "Welcome, " + accounts[email].name + "! Login successful.",
+            "success",
+          );
+          loginForm.reset();
+        } else {
+          showMessage(
+            "Invalid email or password. Please sign up first or try again.",
+            "error",
+          );
+        }
+      });
+
+      function forgotPassword(event) {
+        event.preventDefault();
+        showMessage(
+          "Password reset requires a configured email service or backend.",
+          "error",
+        );
+      }
+    </script>
+  </body>
+</html>
