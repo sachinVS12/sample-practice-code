@@ -1,22 +1,17 @@
-<!doctype html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>web page</title>
-    <style>
-      p {
-        border: 2px solid red;
-        padding: 50px;
-        margin: 20px;
+    <title>t1</title>
+    <script type="text/javascript">
+      function addNode() {
+        var newP = document.createElement("p");
+        var textNode = document.createTextNode(" This is a new text node");
+        newP.appendChild(textNode);
+        document.getElementById("firstP").appendChild(newP);
       }
-    </style>
+    </script>
   </head>
   <body>
-    <h1>Website names</h1>
-
-    <p>this website1</p>
-    <p>this website2</p>
-    <p>this website3</p>
+    <p id="firstP">firstP</p>
+    <p></p>
   </body>
 </html>
