@@ -68,16 +68,16 @@
 //     console.log("Databse connection failed");
 //   });
 
-//proxy
-const user = { name: "sachin", age: 25 };
+//proxy delete
+// const user = { name: "sachin", age: 25 };
 
-const proxy = new Proxy(user, {
-  get(target, prop) {
-    console.log(`Accessing property:${prop}`);
-    return target[prop];
-  },
-});
-console.log(proxy.age);
+// const proxy = new Proxy(user, {
+//   get(target, prop) {
+//     console.log(`Accessing property:${prop}`);
+//     return target[prop];
+//   },
+// });
+// console.log(proxy.age);
 
 // const user = { name: "sachin", age: 25 };
 
@@ -89,3 +89,7 @@ console.log(proxy.age);
 // });
 
 // console.log(proxy.name);
+
+// server.js
+var student = { age: 20, batch: "ABC" };
+delete student.age;
