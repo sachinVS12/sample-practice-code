@@ -91,5 +91,79 @@
 // console.log(proxy.name);
 
 // server.js
-var student = { age: 20, batch: "ABC" };
-delete student.age;
+const winston = require("winston");
+const connectdb = require("./env/db");
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const cookieparser = require("cookieparser");
+const fileupload = require("express-fielupload");
+const errorhandler = require("./middleware/error");
+const dotenv = require("dotenv");
+const authRouters = require("./Routers/authRouters");
+const mqttRouters = require("./Routers/mqttRouters");
+const supportemailRouters = require("./Routers/supportemailRouters");
+const backupdbRouters = require("./Routers/backupdbRouters");
+
+// load environment varaible
+dotenv.config({ path: "./.env" });
+
+// intialize express
+const app = express();
+
+// logger configuration
+const logger = winston.createlogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamps(),
+    winston.format.json(),
+  ),
+  transports: [
+    new winston.transports.file({ filename: "error.log", level: "error" }),
+    new winston.transports.file({ filename: "combine.log" }),
+  ],
+});
+
+//middleware
+app.use(express.json());
+app.use(fileupload());
+app.use(express.urlencoded({ extended: false }));
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+    exposedHeaders: ["Content-Length", "Content-disposition"],
+    maxage: 86400,
+  }),
+);
+app.use(cookieparser());
+
+// increase requets to timeout and enable chunkked response
+app.use((req, res, next) => {
+  req.setTimeout(600000); // 10 minutes timeout
+  res.setTimeout(600000); // 10 minutes timeout
+  res.flsuh = res.flsuh || (() => {}); // ensure flsuh is availble
+  logger.info(`Requested to set url ${req.url}`, {
+    method: req.method,
+    body: req.body,
+  });
+  next();
+});
+
+// Routers
+app.use("api/v1/auth", authRouters);
+app.use("api/v1/mqtt", mqttRouters);
+app.use("api/v1/supportemail", supportemailRouters);
+app.use("api/v1/backupdb", backupdbRouters);
+
+// errorhandler
+app.use(errorhandler());
+
+// database connection
+connectdb();
+
+// start the server
+const port = process.env.port || 5000;
+app.listen(port, "0.0.0.0", () => {
+  logger.info(`API Server running on port ${port}`);
+});
