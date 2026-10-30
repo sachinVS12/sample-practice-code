@@ -34,3 +34,24 @@ app.delete("/message/:id", async (req, res, next) => {
     res.status(400).json({ success: false, message: error.message });
   }
 });
+
+app.put("/message/:id", async (req, res) => {
+  try {
+    const updateMessage = await Message.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        returnDocument: "after",
+        runValidators: true,
+      },
+    );
+    if (!updateMessage) {
+      res
+        .status(404)
+        .json({ success: false, message: `no found with id ${req.params}` });
+    }
+    res.status(200).json({ success: true, data: updateMessage });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
