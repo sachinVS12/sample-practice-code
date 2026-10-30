@@ -55,3 +55,15 @@ app.put("/message/:id", async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
+
+mongoose
+  .connect("mongodb://localhost:27017/crud")
+  .then(() => {
+    console.log("Database connection successful!");
+    app.listen(8000, () => {
+      console.log("Listening on port number 8000");
+    });
+  })
+  .catch(() => {
+    console.log("Database connection failed");
+  });
