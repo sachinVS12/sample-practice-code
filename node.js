@@ -31,7 +31,7 @@
 //     const message = await Message.findByIdAndDelete(id);
 //     res.status(200).json({ success: true, data: [] });
 //   } catch (error) {
-//     res.status(500).json({ success: false, message: error.mesage });
+//     res.status(500).json({ success: false, message: error.message });
 //   }
 // });
 
@@ -65,7 +65,7 @@
 //     });
 //   })
 //   .catch(() => {
-//     console.log("Databse connection failed");
+//     console.log("Database connection failed");
 //   });
 
 // // proxy delete
