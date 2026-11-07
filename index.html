@@ -6,42 +6,26 @@
     <title>Document</title>
   </head>
   <body>
-    <div class="container">
-      <div class="form-box">
-        <h1 id="title">Sign Up</h1>
-        <p class="subtitle" id="subtitle">Create your account</p>
+    <audio controls>
+      <source src="apk.mp3" type="audio/mpeg" />
+    </audio>
 
-        <form id="authForm">
-          <div class="input-group" id="nameField">
-            <input type="text" id="name" placeholder="Full Name" />
-          </div>
+    <iframe src="https://sarayuiiot.in/"> </iframe>
 
-          <div class="input-group">
-            <input type="email" id="email" placeholder="Email Address" />
-          </div>
+    <video controls>
+      <source src="vidios/favv.mp4" type="video/mp4">
+    </video>
 
-          <div class="input-group">
-            <input type="password" id="password" placeholder="Password" />
-          </div>
+    <embed src="fil/pdf.pdf" type="application/pdf"></embed> 
 
-          <div class="input-group" id="confirmField">
-            <input
-              type="password"
-              id="confirmPassword"
-              placeholder="Confirm Password"
-            />
-          </div>
+    <object data="file/pdf.pdf" type="application/pdf"></object>
 
-          <p id="message"></p>
-
-          <button type="submit" id="submitBtn">Create Account</button>
-        </form>
-
-        <p class="switch-text">
-          <span id="switchMessage">Already have an account?</span>
-          <button type="button" id="switchBtn">Login</button>
-        </p>
-      </div>
-    </div>
+    <form>
+      <div>Password<input type="password" name=""></div><br>
+      <div>Time<input type="time" name=""></div><br>
+      <div>Email<input type="email" name=""></div><br>
+      <div>number<input type="number" name=""></div><br>
+      <div>date<input type="date" name=""></div><br>
+    </form>
   </body>
 </html>

@@ -1,27 +1,33 @@
-// let age = 10;
-// if (age >= 18) {
-//   console.log("Adult");
-// } else {
-//   console.log("minor");
-// }
+const winston = require("winston");
+const connectdb = require("./env/db");
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const cookieparser = require("cookieparser");
+const fileupload = require("express-fileupload");
+const dotenv = require("dotenv");
+const authRouters = require("./Routers/authrouters");
+const mqttRouters = require("./Routers/mqttRouters");
+const supportemailRouters = require("./Routers/supportemailRouters");
+const bckupdbRouters = require("./Routers/ backupdbRouters");
 
-// let role = "admin";
+// load environment varaible
+dotenv.config({ path: "./.env" });
 
-// switch (role) {
-//   case "admin":
-//     console.log("Full access");
-//     break;
+// iniatlize express
+constapp = express();
 
-//   case "user":
-//     console.log("Limited access");
-//     break;
+// logger configuration
+const logger = winston.createlogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamps(),
+    winston.format.json(),
+  ),
+  transport: [
+    new winston.transport.File({ filename: "error.log" }),
+    new winston.transport.fiel({ filename: "combine.log" }),
+  ],
+});
 
-//   default:
-//     console.log("Guest");
-// }
-
-function reverseString(str) {
-  return str.split("").reverse().join("");
-}
-
-console.log(reverseString("madam"));
+// middleware
