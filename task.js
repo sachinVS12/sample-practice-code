@@ -20,6 +20,11 @@
 // Promise.resolve().then(() => console.log("Promise"));
 // console.log("End");
 
-// p-4
-const str = "  Helle World  ";
-console.log(str.replace(/\s+/g, " ").trim().length);
+// // p-4
+// const str = "  Helle World  ";
+// console.log(str.replace(/\s+/g, " ").trim().length);
+
+//p-5
+const str = "  Javascript  ";
+const result = str.trim().replace("Script", "Dev");
+console.log(result);
