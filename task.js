@@ -25,6 +25,10 @@
 // console.log(str.replace(/\s+/g, " ").trim().length);
 
 //p-5
+// const str = "  Javascript  ";
+// const result = str.trim().replace("Script", "Dev");
+// console.log(result);
+
+// p-6
 const str = "  Javascript  ";
-const result = str.trim().replace("Script", "Dev");
-console.log(result);
+console.log(str.trim().toLowerCase().replace("script", "Script"));
