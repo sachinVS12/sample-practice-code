@@ -15,7 +15,11 @@
 // console.log(str.slice(-6, -1).toUpperCase());
 
 // p-3
-console.log("start");
-setTimeout(() => console.log("Timeout"), 0);
-Promise.resolve().then(() => console.log("Promise"));
-console.log("End");
+// console.log("start");
+// setTimeout(() => console.log("Timeout"), 0);
+// Promise.resolve().then(() => console.log("Promise"));
+// console.log("End");
+
+// p-4
+const str = "  Helle World  ";
+console.log(str.replace(/\s+/g, " ").trim().length);
