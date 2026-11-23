@@ -62,15 +62,25 @@
 // console.log(blocked.indexOf("sanjay"));
 
 // name count -------------------------------------
-const sales = {
-  laptop: 120,
-  mouse: 45,
-  keyboard: 80,
-  monitor: 50,
-  webcam: 30,
-};
+// const sales = {
+//   laptop: 120,
+//   mouse: 45,
+//   keyboard: 80,
+//   monitor: 50,
+//   webcam: 30,
+// };
 
-const result = Object.entries(sales)
-  .filter(([name, count]) => count > 50)
-  .map(([name, count]) => `${name}:${count}`);
-console.log(result);
+// const result = Object.entries(sales)
+//   .filter(([name, count]) => count > 50)
+//   .map(([name, count]) => `${name}:${count}`);
+// console.log(result);
+
+// score some------------------------------------------
+const scores = [45, 72, 88, 30, 95];
+
+const a = scores.some((s) => s > 90);
+const b = scores.every((s) => s > 40);
+const c = [].every((s) => s > 100);
+const d = [].some((s) => s > 100);
+
+console.log(a, b, c, d);
