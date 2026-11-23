@@ -23,23 +23,32 @@
 
 // a profile page recives user data from an API. The developer creates an updated copy of the user wit a new city and
 // extracts some values.
-const user = {
-  name: "sachin",
-  age: 25,
-  address: { city: "Mysuru", pin: 57002 },
-};
-const updated = {
-  ...user,
-  age: 26,
-  address: { ...user.address, city: "Bangalore" },
-};
+// const user = {
+//   name: "sachin",
+//   age: 25,
+//   address: { city: "Mysuru", pin: 57002 },
+// };
+// const updated = {
+//   ...user,
+//   age: 26,
+//   address: { ...user.address, city: "Bangalore" },
+// };
 
-const {
-  name,
-  address: { city },
-  role = "Guest",
-} = updated;
-console.log(user.address.city);
-console.log(city);
-console.log(role);
-console.log(updated.age);
+// const {
+//   name,
+//   address: { city },
+//   role = "Guest",
+// } = updated;
+// console.log(user.address.city);
+// console.log(city);
+// console.log(role);
+// console.log(updated.age);
+
+const buttons = ["Home", "Cart", "Profile"];
+const handlers = [];
+
+for (let i = 0; i < buttons.length; i++) {
+  handlers.push(() => console.log(buttons[i]));
+}
+handlers[0]();
+handlers[2]();
