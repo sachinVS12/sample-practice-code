@@ -44,11 +44,19 @@
 // console.log(role);
 // console.log(updated.age);
 
-const buttons = ["Home", "Cart", "Profile"];
-const handlers = [];
+// const buttons = ["Home", "Cart", "Profile"];
+// const handlers = [];
 
-for (let i = 0; i < buttons.length; i++) {
-  handlers.push(() => console.log(buttons[i]));
-}
-handlers[0]();
-handlers[2]();
+// for (let i = 0; i < buttons.length; i++) {
+//   handlers.push(() => console.log(buttons[i]));
+// }
+// handlers[0]();
+// handlers[2]();
+
+// username blocked--------------------------------
+const blocked = ["Rahul", "Sanjay", "NaN", NaN];
+
+console.log(blocked.includes("Rahul"));
+console.log(blocked.indexOf(NaN));
+console.log(blocked.includes(NaN));
+console.log(blocked.indexOf("sanjay"));
