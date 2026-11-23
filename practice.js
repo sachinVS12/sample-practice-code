@@ -54,9 +54,23 @@
 // handlers[2]();
 
 // username blocked--------------------------------
-const blocked = ["Rahul", "Sanjay", "NaN", NaN];
+// const blocked = ["Rahul", "Sanjay", "NaN", NaN];
 
-console.log(blocked.includes("Rahul"));
-console.log(blocked.indexOf(NaN));
-console.log(blocked.includes(NaN));
-console.log(blocked.indexOf("sanjay"));
+// console.log(blocked.includes("Rahul"));
+// console.log(blocked.indexOf(NaN));
+// console.log(blocked.includes(NaN));
+// console.log(blocked.indexOf("sanjay"));
+
+// name count -------------------------------------
+const sales = {
+  laptop: 120,
+  mouse: 45,
+  keyboard: 80,
+  monitor: 50,
+  webcam: 30,
+};
+
+const result = Object.entries(sales)
+  .filter(([name, count]) => count > 50)
+  .map(([name, count]) => `${name}:${count}`);
+console.log(result);
