@@ -86,12 +86,19 @@
 // console.log(a, b, c, d);
 
 //chekout form reads-------------------
-const qty = "3";
-const price = 100;
-const coupon = "";
+// const qty = "3";
+// const price = 100;
+// const coupon = "";
 
-console.log(qty * price);
-console.log(qty + price);
-console.log(JSON.stringify(coupon || "NO_COUPON"));
-console.log(JSON.stringify(coupon ?? "NO_COUPON"));
-console.log(null == undefined, null === undefined);
+// console.log(qty * price);
+// console.log(qty + price);
+// console.log(JSON.stringify(coupon || "NO_COUPON"));
+// console.log(JSON.stringify(coupon ?? "NO_COUPON"));
+// console.log(null == undefined, null === undefined);
+
+// array problems--------------------------
+const prices = [450, 120, 900, 75, 300];
+prices.sort();
+console.log(prices);
+prices.sort((a, b) => a - b);
+console.log(prices);
