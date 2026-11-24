@@ -76,11 +76,22 @@
 // console.log(result);
 
 // score some------------------------------------------
-const scores = [45, 72, 88, 30, 95];
+// const scores = [45, 72, 88, 30, 95];
 
-const a = scores.some((s) => s > 90);
-const b = scores.every((s) => s > 40);
-const c = [].every((s) => s > 100);
-const d = [].some((s) => s > 100);
+// const a = scores.some((s) => s > 90);
+// const b = scores.every((s) => s > 40);
+// const c = [].every((s) => s > 100);
+// const d = [].some((s) => s > 100);
 
-console.log(a, b, c, d);
+// console.log(a, b, c, d);
+
+//chekout form reads-------------------
+const qty = "3";
+const price = 100;
+const coupon = "";
+
+console.log(qty * price);
+console.log(qty + price);
+console.log(JSON.stringify(coupon || "NO_COUPON"));
+console.log(JSON.stringify(coupon ?? "NO_COUPON"));
+console.log(null == undefined, null === undefined);
