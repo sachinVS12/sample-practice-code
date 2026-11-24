@@ -5,6 +5,8 @@
 // }
 // console.log(sum);
 
+const { disconnect } = require("mongoose");
+
 // const dat = [10, 20, 30, 40];
 // let sum = 0;
 
@@ -97,8 +99,26 @@
 // console.log(null == undefined, null === undefined);
 
 // array problems--------------------------
-const prices = [450, 120, 900, 75, 300];
-prices.sort();
-console.log(prices);
-prices.sort((a, b) => a - b);
-console.log(prices);
+// const prices = [450, 120, 900, 75, 300];
+// prices.sort();
+// console.log(prices);
+// prices.sort((a, b) => a - b);
+// console.log(prices);
+
+// a shoping app has a cart with a method that
+const cart = {
+  items: [100, 200, 300],
+  discount: 50,
+  regular() {
+    return this.items.reduce((sum, n) => sum + n, 0) - this.discount;
+  },
+  arrow: () => {
+    return typeof this.items;
+  },
+};
+console.log(cart.regular());
+console.log(cart.arrow());
+console.log(typeof hoisted);
+console.log(typeof notHoisted);
+var hoisted = 10;
+var notHoisted = 20;
